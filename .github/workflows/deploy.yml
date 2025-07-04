@@ -1,0 +1,34 @@
+name: Angular Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Inject API Key into environment.prod.ts
+        run: |
+          echo "export const environment = {
+            production: true,
+            apiKey: '${{ secrets.API_KEY }}'
+          };" > src/environments/environment.prod.ts
+
+      - name: Build Angular App
+        run: npm run build -- --configuration=production
+
+      # Add deploy step here if using Firebase, S3, Vercel, etc.

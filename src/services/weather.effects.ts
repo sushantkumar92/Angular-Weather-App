@@ -4,11 +4,13 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as loadActions from '../store/weather.action';
 import { loadWeather } from '../store/weather.action';
 import { catchError, delay, map, of, switchMap } from 'rxjs';
+import { environment } from '../environments/environment.prod';
 
 @Injectable()
 export class WeatherEffects {
   private actions$ = inject(Actions);
   private http = inject(HttpClient);
+  private API_KEY = environment.apiKey;
 
   loadWeather$ = createEffect(() =>
     this.actions$.pipe(
@@ -16,7 +18,7 @@ export class WeatherEffects {
       switchMap(({ city }) =>
         this.http
           .get<any>(
-            `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=02a96c9844541a7045894c014f059a9a&units=metric`
+            `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=API_KEY&units=metric`
           ).pipe(
             delay(3000)
           )
